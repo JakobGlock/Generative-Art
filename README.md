@@ -27,10 +27,10 @@ This will run the script and save an image into the `/Images/Line_Grid` folder.
 ![Circular](/Images/Circular/00bde255.png)
 
 #### Line_Grid
-![Line_Grid](/Images/Line_Grid/0d669792.png)
+![Line_Grid](/Images/Line_Grid/c314c507.png)
 
 #### Line_Walker
-![Line_Walker](/Images/Line_Walker/85712e8.png)
+![Line_Walker](/Images/Line_Walker/857172e8.png)
 
 #### Magnetic_Flow
 ![Magnetic_Flow](/Images/Magnetic_Flow/ec8aa96d.png)
@@ -39,7 +39,7 @@ This will run the script and save an image into the `/Images/Line_Grid` folder.
 ![Mosaic_Circles](/Images/Mosaic_Circles/1e299f47.png)
 
 #### Parallel_Lines
-![Parallel_Lines](/Images/Parallel_Lines/9ccc02f6.png)
+![Parallel_Lines](/Images/Parallel_Lines/a5c334c2.png)
 
 #### Vertical_Lines
 ![Vertical_Lines](/Images/Vertical_Lines/125c3d4d.png)
