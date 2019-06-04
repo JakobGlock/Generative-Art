@@ -76,9 +76,8 @@ class magnet:
 # Main function
 def main():
 
-    context.set_source_rgba(1, 1, 1, 1)
-    context.rectangle(0, 0, width, height)
-    context.fill()
+    context.set_source_rgba(0.95, 0.95, 0.95, 1)
+    context.paint()
 
     magnets = []
     myParticles = []
