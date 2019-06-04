@@ -37,13 +37,6 @@ def main():
     context.paint()
 
     context.set_source_rgba(0, 0, 0, 1)
-    context.move_to(0, 100)
-    context.line_to(0, height-100)
-    context.stroke()
-
-    context.move_to(width, 100)
-    context.line_to(width, height-100)
-    context.stroke()
 
     connectorLines = []
 
