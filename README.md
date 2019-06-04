@@ -1,5 +1,8 @@
 # Generative-Art
-A selection generative art scripts written in Python.
+A selection generative art scripts written in Python, with the intention of using my AxiDraw to plot them onto paper.
+
+These scripts export either a PNG or SVG file, you will need to dive into the code to change the variable which controls this, I usually call it `fileFormat`.
+
 
 ### Setup
 
