@@ -24,7 +24,7 @@ This will run the script and save an image into the `/Images/Line_Grid` folder.
 ### Sample Images
 
 #### Circular
-![Circular](/Images/Circular/00bde255-sample.png)
+![Circular](/Images/Circular/0bde255-sample.png)
 
 #### Line_Grid
 ![Line_Grid](/Images/Line_Grid/c314c507-sample.png)
