@@ -36,7 +36,7 @@ This will run the script and save an image into the `/Images/Line_Grid` folder.
 ![Line_Walker](/Images/Line_Walker/857172e8-sample.png)
 
 #### Magnetic_Flow
-![Magnetic_Flow](/Images/Magnetic_Flow/ec8aa96d-sample.png)
+![Magnetic_Flow](/Images/Magnetic_Flow/9d6a69dd-sample.png)
 
 #### Mosaic_Circles
 ![Mosaic_Circles](/Images/Mosaic_Circles/1e299f47-sample.png)
