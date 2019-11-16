@@ -46,8 +46,7 @@ class Line:
         rx1 = (intersectX - p2[0]) / (p3[0] - p2[0])
         ry1 = (intersectY - p2[1]) / (p3[1] - p2[1])
 
-        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and
-                ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
+        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
             return True
         else:
             return False
@@ -107,8 +106,8 @@ def main():
                 index = order[i]
                 pos = np.array([
                     (math.cos(angle*index) * (circleSize-0.1))+center[0],
-                    (math.sin(angle*index) * (circleSize-0.1))+center[1]]
-                )
+                    (math.sin(angle*index) * (circleSize-0.1))+center[1]
+                ])
                 dir = (pos - np.array([centerX, centerY])) * -1.0
                 myLines.append(Line(pos, dir, i))
                 myLines[i].changeDir(dir)
