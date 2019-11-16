@@ -1,10 +1,13 @@
 import cairo
 import numpy as np
-import random, math, uuid
+import random
+import math
+import uuid
 
 # Some variables
 fileFormat = 'PNG'
 width, height = 1000, 1000
+
 
 # Line class
 class Line:
@@ -24,12 +27,14 @@ class Line:
         p = np.array([x, y])
         return p
 
+
 # Map values to a new range
 def map(value, leftMin, leftMax, rightMin, rightMax):
     leftSpan = leftMax - leftMin
     rightSpan = rightMax - rightMin
     valueScaled = float(value - leftMin) / float(leftSpan)
     return rightMin + (valueScaled * rightSpan)
+
 
 # Main function
 def main():
@@ -52,8 +57,14 @@ def main():
             x = xStep * i + xOffset
             y = yStep * h + yOffset
             yy = random.randint(25, 100)
-            p0 = np.array([x + random.uniform(-(xStep//2)+10, (xStep//2)+10), random.uniform(y-50, y+50) + yy])
-            p1 = np.array([x + random.uniform(-(xStep//2)+10, (xStep//2)+10), random.uniform(y-50, y+50) - yy])
+            p0 = np.array([
+                x + random.uniform(-(xStep//2)+10, (xStep//2)+10),
+                random.uniform(y-50, y+50) + yy
+            ])
+            p1 = np.array([
+                x + random.uniform(-(xStep//2)+10, (xStep//2)+10),
+                random.uniform(y-50, y+50) - yy
+            ])
             connectorLines.append(Line(p0, p1))
 
             if i != 0:
@@ -70,6 +81,7 @@ def main():
                     line = Line(p0, p1)
                     line.draw(context)
 
+
 # Call the main function and save an image
 if __name__ == '__main__':
     if fileFormat == 'PNG':
@@ -77,10 +89,14 @@ if __name__ == '__main__':
         context = cairo.Context(surface)
         main()
         filename = uuid.uuid4().hex[:8]
-        surface.write_to_png("Images/Parallel_Lines/"+ str(filename) +".png")
+        surface.write_to_png("Images/Parallel_Lines/" + str(filename) + ".png")
     elif fileFormat == 'SVG':
         filename = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface("Images/Parallel_Lines/0-svg/"+ str(filename) +".svg", width, height)
+        surface = cairo.SVGSurface(
+                "Images/Parallel_Lines/0-svg/" + str(filename) + ".svg",
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         surface.finish()

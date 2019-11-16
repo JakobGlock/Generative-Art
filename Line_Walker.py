@@ -1,4 +1,7 @@
-import cairo, math, random, uuid
+import cairo
+import math
+import random
+import uuid
 import numpy as np
 
 #############################
@@ -10,6 +13,7 @@ fileFormat = 'PNG'
 width, height = 1000, 1000
 border = 50
 centerX, centerY = width/2.0, height/2.0
+
 
 # Line Class
 class Line:
@@ -37,9 +41,9 @@ class Line:
         if b == 0:
             newDir = 0
         elif b == 1:
-            newDir = 22.5 / 2.0 #self.angle*8
+            newDir = 22.5 / 2.0
         else:
-            newDir = -(22.5 / 2.0) #-self.angle*8
+            newDir = -(22.5 / 2.0)
         angle = math.radians(currentAngle + newDir)
         dir = np.array([math.cos(angle), math.sin(angle)])
         self.dir = dir
@@ -87,6 +91,7 @@ class Line:
         dir = (self.p0 - self.p1) / self.getLength()
         return dir * -1.0
 
+
 # Main function
 def main():
     context.set_source_rgba(0.95, 0.95, 0.95, 1.0)
@@ -103,10 +108,13 @@ def main():
 
     for i in range(3000):
         if i != 0:
-            if stopDrawing == True:
+            if stopDrawing is True:
                 connect = random.randint(0, i-1)
                 pos = walkers[connect].getLerp(random.uniform(0.25, 0.75))
-                dist = math.hypot(walkers[i-1].p0[0] - centerX, walkers[i-1].p0[1] - centerY)
+                dist = math.hypot(
+                        walkers[i-1].p0[0] - centerX,
+                        walkers[i-1].p0[1] - centerY
+                )
                 c = np.array([centerX, centerY])
                 dir = ((walkers[i-1].p0 - c) / dist) * -1.0
                 walkers.append(Line(pos, dir, i, angle * 180.0 / math.pi, connect))
@@ -138,6 +146,7 @@ def main():
 
         walkers[i].draw(context)
 
+
 # Call the main function and save an image
 if __name__ == '__main__':
     if fileFormat == 'PNG':
@@ -148,7 +157,11 @@ if __name__ == '__main__':
         surface.write_to_png("Images/Line_Walker/"+str(fileName)+".png")
     elif fileFormat == 'SVG':
         fileName = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface("Images/Line_Walker/0-svg/"+str(fileName)+".svg", width, height)
+        surface = cairo.SVGSurface(
+                "Images/Line_Walker/0-svg/"+str(fileName)+".svg",
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         context.finish()

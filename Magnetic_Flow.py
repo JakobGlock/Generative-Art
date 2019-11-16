@@ -1,4 +1,7 @@
-import cairo, math, random, uuid
+import cairo
+import math
+import random
+import uuid
 
 # Set to SVG to export an SVG file
 fileFormat = 'PNG'
@@ -9,6 +12,7 @@ width = 1000
 gridSize = 100
 border, magBorder = 50, 450
 stepX, stepY = (width//gridSize), (height//gridSize)
+
 
 # Particle class
 class Particle:
@@ -59,12 +63,13 @@ class Particle:
         return [sx, sy]
 
     def draw(self, context):
-        if self.drawStroke != False:
+        if self.drawStroke is not False:
             context.set_line_width(0.9)
             context.set_source_rgba(0, 0, 0, 1)
             context.move_to(self.lx, self.ly)
             context.line_to(self.x, self.y)
             context.stroke()
+
 
 # Magnet Class
 class magnet:
@@ -72,6 +77,7 @@ class magnet:
         self.x = x
         self.y = y
         self.p = pole
+
 
 # Main function
 def main():
@@ -92,7 +98,11 @@ def main():
         if random.uniform(0, 1) < 0.5:
             pole = -1
 
-        magnets.append(magnet(random.randint(100, width-100), random.randint(100, height-100), pole))
+        magnets.append(magnet(
+                random.randint(100, width-100),
+                random.randint(100, height-100),
+                pole
+        ))
 
     startNum = 360
     a = (math.pi*2)/startNum
@@ -100,8 +110,10 @@ def main():
     for x in range(100, width-100, (width-200)//1):
         for y in range(100, height-100, (height-200)//1):
             for i in range(startNum):
-                xx, yy = x + (math.sin(a*i)*250) + ((width-200)//2), y + (math.cos(a*i)*250) + ((height-200)//2)#random.randint(100, width-100), random.randint(100, height-100)
-                vx, vy = random.uniform(-1, 1)*0.5, random.uniform(-1, 1)*0.5
+                xx = x + (math.sin(a*i)*250) + ((width-200)//2)
+                yy = y + (math.cos(a*i)*250) + ((height-200)//2)
+                vx = random.uniform(-1, 1)*0.5
+                vy = random.uniform(-1, 1)*0.5
                 myParticles.append(Particle(xx, yy, vx, vy))
 
     for p in myParticles:
@@ -118,9 +130,10 @@ def main():
             p.setForce(sumX, sumY)
             p.update()
             p.edges()
-            if t%8 == 0:
+            if t % 8 == 0:
                 p.draw(context)
                 p.setLastPos()
+
 
 # Call the main function
 if __name__ == '__main__':
@@ -129,10 +142,14 @@ if __name__ == '__main__':
         context = cairo.Context(surface)
         main()
         filename = uuid.uuid4().hex[:8]
-        surface.write_to_png('Images/Magnetic_Flow/'+ str(filename) +'.png')
+        surface.write_to_png('Images/Magnetic_Flow/' + str(filename) + '.png')
     elif fileFormat == 'SVG':
         filename = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface('Images/Magnetic_Flow/0-svg/'+ str(filename) +'.svg', width, height)
+        surface = cairo.SVGSurface(
+                'Images/Magnetic_Flow/0-svg/' + str(filename) + '.svg',
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         surface.finish()

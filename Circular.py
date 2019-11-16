@@ -1,9 +1,13 @@
-import cairo, math, uuid, random
+import cairo
+import math
+import uuid
+import random
 import numpy as np
 
 # Some variables
 fileFormat = 'PNG'
 width, height = 1000, 1000
+
 
 # Line class
 class Line:
@@ -42,7 +46,8 @@ class Line:
         rx1 = (intersectX - p2[0]) / (p3[0] - p2[0])
         ry1 = (intersectY - p2[1]) / (p3[1] - p2[1])
 
-        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
+        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and
+                ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
             return True
         else:
             return False
@@ -65,6 +70,7 @@ class Line:
     def getDistFromCenter(self, center):
         dist = math.hypot(self.p1[0] - center[0], self.p1[1] - center[1])
         return dist
+
 
 # Main function
 def main():
@@ -99,7 +105,10 @@ def main():
 
             for i in range(numLines):
                 index = order[i]
-                pos = np.array([(math.cos(angle*index) * (circleSize-0.1))+center[0], (math.sin(angle*index) * (circleSize-0.1))+center[1]])
+                pos = np.array([
+                    (math.cos(angle*index) * (circleSize-0.1))+center[0],
+                    (math.sin(angle*index) * (circleSize-0.1))+center[1]]
+                )
                 dir = (pos - np.array([centerX, centerY])) * -1.0
                 myLines.append(Line(pos, dir, i))
                 myLines[i].changeDir(dir)
@@ -121,6 +130,7 @@ def main():
                 if line.getLength() > 0:
                     line.draw(context)
 
+
 # Call the main function and save image
 if __name__ == '__main__':
     if fileFormat == 'PNG':
@@ -131,7 +141,11 @@ if __name__ == '__main__':
         surface.write_to_png("Images/Circular/" + filename + ".png")
     else:
         filename = str(uuid.uuid4().hex[:8])
-        surface = cairo.SVGSurface("Images/Circular/0-svg/" + filename + ".svg", width, height)
+        surface = cairo.SVGSurface(
+                "Images/Circular/0-svg/" + filename + ".svg",
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         surface.finish()

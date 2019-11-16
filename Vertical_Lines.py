@@ -1,9 +1,13 @@
-import cairo, math, uuid, random
+import cairo
+import math
+import uuid
+import random
 import numpy as np
 
 # Variables
 fileFormat = 'PNG'
 width, height = 1000, 1000
+
 
 # Line class
 class lineSegment:
@@ -27,7 +31,7 @@ class lineSegment:
     def changeDir(self):
         self.count = self.count + 1
 
-        if self.count%40 == 0:
+        if self.count % 40 == 0:
             angle = math.radians(random.randint(45, 135))
             dir = np.array([math.sin(angle), math.cos(angle)])
             self.dir = dir
@@ -77,6 +81,7 @@ class lineSegment:
         else:
             self.p1 = p
 
+
 # Helper function
 def getDirection():
     numAngles = 2
@@ -89,6 +94,7 @@ def getDirection():
 
     dir = np.array([math.sin(angle), math.cos(angle)])
     return dir
+
 
 # Main function
 def main():
@@ -113,7 +119,7 @@ def main():
 
         walk = True
         while walk:
-            if count%amtStep == 0:
+            if count % amtStep == 0:
                 r = random.uniform(0, 1)
                 if r < amt and walkers[index].p0[1] > startDist:
                     dir = getDirection()
@@ -144,6 +150,7 @@ def main():
     for walker in walkers:
         walker.draw(context)
 
+
 # Call the main function and save an image
 if __name__ == '__main__':
     if fileFormat == 'PNG':
@@ -151,10 +158,14 @@ if __name__ == '__main__':
         context = cairo.Context(surface)
         main()
         fileName = uuid.uuid4().hex[:8]
-        surface.write_to_png('Images/Vertical_Lines/'+str(fileName)+'.png')
+        surface.write_to_png('Images/Vertical_Lines/' + str(fileName) + '.png')
     elif fileFormat == 'SVG':
         fileName = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface('Images/Vertical_Lines/0-svg/'+str(fileName)+'.svg', width, height)
+        surface = cairo.SVGSurface(
+                'Images/Vertical_Lines/0-svg/' + str(fileName) + '.svg',
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         context.finish()

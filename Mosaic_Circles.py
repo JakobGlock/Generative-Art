@@ -1,4 +1,7 @@
-import cairo, math, random, uuid
+import cairo
+import math
+import random
+import uuid
 import numpy as np
 from noise import pnoise2
 
@@ -7,6 +10,7 @@ fileFormat = 'PNG'
 width, height = 1000, 1000
 centerX, centerY = width/2, height/2
 TWO_PI = math.pi*2.0
+
 
 # Noise generator class
 class NoiseLoop:
@@ -31,6 +35,7 @@ class NoiseLoop:
     def setNoiseSeed(self, _offset):
         self.noiseSeed = _offset
 
+
 # Line class
 class Line:
     def __init__(self, context, x1, y1, x2, y2):
@@ -49,12 +54,14 @@ class Line:
     def setId(self, id):
         self.id = id
 
+
 # Map a value to a new range
 def map(value, leftMin, leftMax, rightMin, rightMax):
     leftSpan = leftMax - leftMin
     rightSpan = rightMax - rightMin
     valueScaled = float(value - leftMin) / float(leftSpan)
     return rightMin + (valueScaled * rightSpan)
+
 
 def main():
 
@@ -102,6 +109,7 @@ def main():
                         line.draw()
                         context.stroke()
 
+
 # Call the main function
 if __name__ == '__main__':
     if fileFormat == 'PNG':
@@ -109,10 +117,14 @@ if __name__ == '__main__':
         context = cairo.Context(surface)
         main()
         fileName = uuid.uuid4().hex[:8]
-        surface.write_to_png("Images/Mosaic_Circles/"+ str(fileName) +".png")
+        surface.write_to_png("Images/Mosaic_Circles/" + str(fileName) + ".png")
     elif fileFormat == 'SVG':
         fileName = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface("Images/Mosaic_Circles/0-svg/"+str(fileName)+".svg", width, height)
+        surface = cairo.SVGSurface(
+                "Images/Mosaic_Circles/0-svg/" + str(fileName) + ".svg",
+                width,
+                height
+        )
         context = cairo.Context(surface)
         main()
         surface.finish()
