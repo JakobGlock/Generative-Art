@@ -21,9 +21,11 @@ Install some dependencies, on Linux this very simple you just run the following 
 
 Create a Python virtual environment and activate it:
 
-`cd /to/the/repo/directory/on/your/computer/Generative-art`
-`python3 -m venv venv`
-`source venv/bin/activate`
+```
+cd /to/the/repo/directory/on/your/computer/Generative-art
+python3 -m venv venv
+source venv/bin/activate
+```
 
 You will also need to install some packages for Python which can be done using the following command:
 
