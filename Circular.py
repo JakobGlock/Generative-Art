@@ -1,27 +1,25 @@
-import cairo
+from graphics.Graphics import setup, export
+from graphics.Geometry import background, color, stroke
+from graphics.Geometry import Line as draw_line
+from graphics.Vector import Vector as vec2
 import math
-import uuid
 import random
-import numpy as np
 
-# Some variables
-fileFormat = 'PNG'
 width, height = 1000, 1000
 
 
 # Line class
 class Line:
-    def __init__(self, p0, dir, id):
-        self.id = id
+    def __init__(self, p0, d, _id):
+        self.id = _id
         self.p0 = p0
         self.p1 = p0
-        self.dir = dir
+        self.dir = d
 
-    def draw(self, context):
-        context.set_source_rgba(0.15, 0.15, 0.15, 1)
-        context.move_to(self.p0[0], self.p0[1])
-        context.line_to(self.p1[0], self.p1[1])
-        context.stroke()
+    def draw(self):
+        color(0.15, 0.15, 0.15, 1)
+        draw_line(self.p0[0], self.p0[1], self.p1[0], self.p1[1])
+        stroke()
 
     def update(self):
         self.p1 = self.p1 + self.dir
@@ -38,113 +36,101 @@ class Line:
         if denom == 0:
             return False
 
-        intersectX = (B2 * C1 - B1 * C2) / denom
-        intersectY = (A1 * C2 - A2 * C1) / denom
+        intersect_x = (B2 * C1 - B1 * C2) / denom
+        intersect_y = (A1 * C2 - A2 * C1) / denom
 
-        rx0 = (intersectX - self.p0[0]) / (self.p1[0] - self.p0[0])
-        ry0 = (intersectY - self.p0[1]) / (self.p1[1] - self.p0[1])
-        rx1 = (intersectX - p2[0]) / (p3[0] - p2[0])
-        ry1 = (intersectY - p2[1]) / (p3[1] - p2[1])
+        rx0 = (intersect_x - self.p0[0]) / (self.p1[0] - self.p0[0])
+        ry0 = (intersect_y - self.p0[1]) / (self.p1[1] - self.p0[1])
+        rx1 = (intersect_x - p2[0]) / (p3[0] - p2[0])
+        ry1 = (intersect_y - p2[1]) / (p3[1] - p2[1])
 
         if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
             return True
         else:
             return False
 
-    def changeDir(self, a):
-        currentAngle = math.atan2(a[1], a[0]) * 180 / math.pi
-        newDir = random.randint(-15, 15)
-        angle = math.radians(currentAngle + newDir)
-        dir = np.array([math.cos(angle), math.sin(angle)])
-        self.dir = dir
+    def change_dir(self, a):
+        current_angle = math.atan2(a[1], a[0]) * 180 / math.pi
+        new_dir = random.randint(-15, 15)
+        angle = math.radians(current_angle + new_dir)
+        d = vec2([math.cos(angle), math.sin(angle)])
+        self.dir = d
 
-    def getLength(self):
+    def get_length(self):
         dist = math.hypot(self.p0[0] - self.p1[0], self.p0[1] - self.p1[1])
         return dist
 
-    def getDirection(self):
-        dir = (self.p0 - self.p1) / self.getLength()
-        return dir * -1.0
+    def get_direction(self):
+        d = (self.p0 - self.p1) / self.get_length()
+        return d * -1.0
 
-    def getDistFromCenter(self, center):
+    def get_dist_from_center(self, center):
         dist = math.hypot(self.p1[0] - center[0], self.p1[1] - center[1])
         return dist
 
 
-# Main function
-def main():
+def draw():
 
-    context.set_source_rgba(0.95, 0.95, 0.95, 1.0)
-    context.paint()
+    background(0.95, 0.95, 0.95, 1.0)
 
-    gridSize = 3
+    grid_size = 3
     border = 40
-    xStep = (width-(border*2)) / float(gridSize)
-    yStep = (height-(border*2)) / float(gridSize)
-    xOffset = xStep / 2.0
-    yOffset = yStep / 2.0
+    x_step = (width-(border*2)) / float(grid_size)
+    y_step = (height-(border*2)) / float(grid_size)
+    x_offset = x_step / 2.0
+    y_offset = y_step / 2.0
 
-    for y in range(gridSize):
-        for x in range(gridSize):
-            xPos = xStep * x + xOffset + border
-            yPos = yStep * y + yOffset + border
-            myLines = []
-            numLines = 180
-            angle = (2*math.pi) / float(numLines)
-            centerX = width / 2.0
-            centerY = height / 2.0
-            center = np.array([xPos, yPos])
-            circleSize = (xStep / 2.0) - 10
+    for y in range(grid_size):
+        for x in range(grid_size):
+            x_pos = x_step * x + x_offset + border
+            y_pos = y_step * y + y_offset + border
+            my_lines = []
+            num_lines = 180
+            angle = (2*math.pi) / float(num_lines)
+            center_x = width / 2.0
+            center_y = height / 2.0
+            center = vec2([x_pos, y_pos])
+            circle_size = (x_step / 2.0) - 10
 
             order = []
-            for i in range(numLines):
+            for i in range(num_lines):
                 order.append(i)
 
                 random.shuffle(order)
 
-            for i in range(numLines):
+            for i in range(num_lines):
                 index = order[i]
-                pos = np.array([
-                    (math.cos(angle*index) * (circleSize-0.1))+center[0],
-                    (math.sin(angle*index) * (circleSize-0.1))+center[1]
+                pos = vec2([
+                    (math.cos(angle*index) * (circle_size-0.1))+center[0],
+                    (math.sin(angle*index) * (circle_size-0.1))+center[1]
                 ])
-                dir = (pos - np.array([centerX, centerY])) * -1.0
-                myLines.append(Line(pos, dir, i))
-                myLines[i].changeDir(dir)
+                dir = (pos - vec2([center_x, center_y])) * -1.0
+                my_lines.append(Line(pos, dir, i))
+                my_lines[i].change_dir(dir)
 
-                while myLines[i].getDistFromCenter(center) < circleSize:
-                    myLines[i].update()
+                while my_lines[i].get_dist_from_center(center) < circle_size:
+                    my_lines[i].update()
 
-                    stopDrawing = False
-                    for line in myLines:
-                        if line.id != myLines[i].id:
-                            if myLines[i].intersect(line.p0, line.p1):
-                                stopDrawing = True
+                    stop_drawing = False
+                    for line in my_lines:
+                        if line.id != my_lines[i].id:
+                            if my_lines[i].intersect(line.p0, line.p1):
+                                stop_drawing = True
                                 break
 
-                    if stopDrawing:
+                    if stop_drawing:
                         break
 
-            for line in myLines:
-                if line.getLength() > 0:
-                    line.draw(context)
+            for line in my_lines:
+                if line.get_length() > 0:
+                    line.draw()
 
 
-# Call the main function and save image
+def main():
+    setup(width, height)
+    draw()
+    export()
+
+
 if __name__ == '__main__':
-    if fileFormat == 'PNG':
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
-        context = cairo.Context(surface)
-        main()
-        filename = str(uuid.uuid4().hex[:8])
-        surface.write_to_png("Images/Circular/" + filename + ".png")
-    else:
-        filename = str(uuid.uuid4().hex[:8])
-        surface = cairo.SVGSurface(
-                "Images/Circular/0-svg/" + filename + ".svg",
-                width,
-                height
-        )
-        context = cairo.Context(surface)
-        main()
-        surface.finish()
+    main()

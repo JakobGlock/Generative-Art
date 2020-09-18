@@ -1,49 +1,49 @@
-import cairo
+from graphics.Graphics import setup, export
+from graphics.Geometry import background, color, stroke
+from graphics.Geometry import Line as draw_line
+from graphics.Vector import Vector as vec2
 import math
-import uuid
 import random
 import numpy as np
 
-# Variables
-fileFormat = 'PNG'
+# Some variables
 width, height = 1000, 1000
 
 
-# Line class
-class lineSegment:
+class Line:
     def __init__(self, p0, dir, id):
         self.id = id
         self.p0 = p0
         self.p1 = p0
         self.dir = dir
-        self.intersect = np.array([0.0, 0.0])
+        self.intersect = vec2([0.0, 0.0])
         self.count = 0
 
-    def draw(self, context):
-        context.set_source_rgba(0, 0, 0, 1)
-        context.move_to(self.p0[0], self.p0[1])
-        context.line_to(self.p1[0], self.p1[1])
-        context.stroke()
+    def draw(self):
+        color(0.0, 0.0, 0.0, 1.0)
+        draw_line(self.p0[0], self.p0[1], self.p1[0], self.p1[1])
+        stroke()
 
-    def extendLine(self):
+    def extend_line(self):
         self.p1 = self.p1 + self.dir
 
-    def changeDir(self):
+    def change_dir(self):
         self.count = self.count + 1
 
         if self.count % 40 == 0:
             angle = math.radians(random.randint(45, 135))
-            dir = np.array([math.sin(angle), math.cos(angle)])
+            dir = vec2([math.sin(angle), math.cos(angle)])
             self.dir = dir
             return True
         else:
             return False
 
     def edges(self):
-        if self.p1[0] >= width or self.p1[0] < 0 or self.p1[1] < 0 or self.p1[1] >= height-50:
+        if self.p1[0] >= width or self.p1[0] < 0 or \
+                self.p1[1] < 0 or self.p1[1] >= height-50:
             return True
 
-    def lineIntersection(self, p2, p3):
+    def line_intersect(self, p2, p3):
         A1 = self.p1[1] - self.p0[1]
         B1 = self.p0[0] - self.p1[0]
         C1 = A1 * self.p0[0] + B1 * self.p0[1]
@@ -55,24 +55,25 @@ class lineSegment:
         if denom == 0:
             return False
 
-        intersectX = (B2 * C1 - B1 * C2) / denom
-        intersectY = (A1 * C2 - A2 * C1) / denom
+        intersect_x = (B2 * C1 - B1 * C2) / denom
+        intersect_y = (A1 * C2 - A2 * C1) / denom
 
-        rx0 = (intersectX - self.p0[0]) / (self.p1[0] - self.p0[0])
-        ry0 = (intersectY - self.p0[1]) / (self.p1[1] - self.p0[1])
-        rx1 = (intersectX - p2[0]) / (p3[0] - p2[0])
-        ry1 = (intersectY - p2[1]) / (p3[1] - p2[1])
+        rx0 = (intersect_x - self.p0[0]) / (self.p1[0] - self.p0[0])
+        ry0 = (intersect_y - self.p0[1]) / (self.p1[1] - self.p0[1])
+        rx1 = (intersect_x - p2[0]) / (p3[0] - p2[0])
+        ry1 = (intersect_y - p2[1]) / (p3[1] - p2[1])
 
-        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
-            self.intersect = np.array([intersectX, intersectY])
+        if(((rx0 >= 0 and rx0 <= 1) or (ry0 >= 0 and ry0 <= 1)) and \
+                ((rx1 >= 0 and rx1 <= 1) or (ry1 >= 0 and ry1 <= 1))):
+            self.intersect = vec2([intersect_x, intersect_y])
             return True
         else:
             return False
 
-    def getIntersect(self):
+    def get_intersect(self):
         return self.intersect
 
-    def getClosetPoint(self, p):
+    def get_closest_point(self, p):
         a = np.linalg.norm(self.p0-p)
         b = np.linalg.norm(self.p1-p)
 
@@ -82,90 +83,78 @@ class lineSegment:
             self.p1 = p
 
 
-# Helper function
-def getDirection():
-    numAngles = 2
-    r = int(random.uniform(0, numAngles))
-    angleStep = [0, 45]
+def get_direction():
+    num_angles = 2
+    r = int(random.uniform(0, num_angles))
+    angle_step = [0, 45]
 
-    for i in range(numAngles):
+    for i in range(num_angles):
         if i == r:
-            angle = math.radians(angleStep[i])
+            angle = math.radians(angle_step[i])
 
-    dir = np.array([math.sin(angle), math.cos(angle)])
-    return dir
+    dirs = vec2([math.sin(angle), math.cos(angle)])
+    return dirs
 
 
-# Main function
-def main():
-    context.set_source_rgba(0.95, 0.95, 0.95, 1)
-    context.paint()
+def draw():
+    background(0.95, 0.95, 0.95, 1.0)
 
-    numWalkers = random.randint(100, 200)
+    num_walkers = random.randint(100, 200)
     walkers = []
-    xStep = float((width-100)) / numWalkers
+    x_step = float((width-100)) / num_walkers
     amt = random.uniform(0.075, 0.15)
-    amtStep = random.randint(15, 80)
-    startDist = random.randint(10, 150)
+    amt_step = random.randint(15, 80)
+    start_dist = random.randint(10, 150)
 
     index = 0
     count = 0
-    for i in range(numWalkers):
-        x = float((xStep * i) + 50.0)
-        pos = np.array([float(x), float(50.0)])
+    for i in range(num_walkers):
+        x = float((x_step * i) + 50.0)
+        pos = vec2([float(x), float(50.0)])
         angle = math.radians(0)
-        dir = np.array([math.sin(angle), math.cos(angle)])
-        walkers.append(lineSegment(pos, dir, i))
+        dirs = vec2([math.sin(angle), math.cos(angle)])
+        walkers.append(Line(pos, dirs, i))
 
         walk = True
         while walk:
-            if count % amtStep == 0:
+            if count % amt_step == 0:
                 r = random.uniform(0, 1)
-                if r < amt and walkers[index].p0[1] > startDist:
-                    dir = getDirection()
-                    walkers.append(lineSegment(walkers[index].p1, dir, i))
+                if r < amt and walkers[index].p0[1] > start_dist:
+                    dirs = get_direction()
+                    walkers.append(Line(walkers[index].p1, dirs, i))
                     index = index + 1
                 else:
                     angle = math.radians(0)
-                    dir = np.array([math.sin(angle), math.cos(angle)])
-                    walkers.append(lineSegment(walkers[index].p1, dir, i))
+                    dirs = vec2([math.sin(angle), math.cos(angle)])
+                    walkers.append(Line(walkers[index].p1, dirs, i))
                     index = index + 1
 
-            walkers[index].extendLine()
+            walkers[index].extend_line()
 
-            hitLine = False
+            hit_line = False
             for w in walkers:
                 if walkers[index].id != w.id:
-                    intersect = walkers[index].lineIntersection(w.p0, w.p1)
+                    intersect = walkers[index].line_intersect(w.p0, w.p1)
                     if intersect:
-                        hitLine = True
+                        hit_line = True
 
-            hitEdge = walkers[index].edges()
-            if hitEdge or hitLine:
+            hit_edge = walkers[index].edges()
+            if hit_edge or hit_line:
                 walk = False
 
             count = count + 1
         index = index + 1
 
     for walker in walkers:
-        walker.draw(context)
+        walker.draw()
 
 
-# Call the main function and save an image
+def main():
+    setup(width, height)
+    draw()
+    export()
+
+
+# Call the main function
 if __name__ == '__main__':
-    if fileFormat == 'PNG':
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
-        context = cairo.Context(surface)
-        main()
-        fileName = uuid.uuid4().hex[:8]
-        surface.write_to_png('Images/Vertical_Lines/' + str(fileName) + '.png')
-    elif fileFormat == 'SVG':
-        fileName = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface(
-                'Images/Vertical_Lines/0-svg/' + str(fileName) + '.svg',
-                width,
-                height
-        )
-        context = cairo.Context(surface)
-        main()
-        context.finish()
+    main()

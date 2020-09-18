@@ -1,60 +1,56 @@
-import cairo
+from graphics.Graphics import setup, export
+from graphics.Geometry import background, color, stroke, Line, line_width
 import math
 import random
-import uuid
-
-# Set to SVG to export an SVG file
-fileFormat = 'PNG'
 
 # Some variables
-height = 1000
-width = 1000
-gridSize = 100
-border, magBorder = 50, 450
-stepX, stepY = (width//gridSize), (height//gridSize)
+height, width = 1000, 1000
+grid_size = 100
+border, mag_border = 50, 450
+step_x, step_y = (width//grid_size), (height//grid_size)
 
 
 # Particle class
 class Particle:
-    def __init__(self, x, y, velX, velY):
+    def __init__(self, x, y, vel_x, vel_y):
         self.x = x
         self.y = y
-        self.velX = velX
-        self.velY = velY
-        self.frcX = 0
-        self.frcY = 0
+        self.vel_x = vel_x
+        self.vel_y = vel_y
+        self.frc_x = 0
+        self.frc_y = 0
         self.lx, self.ly = self.x, self.y
-        self.drawStroke = True
+        self.draw_stroke = True
 
     def update(self):
 
-        self.x = self.x + self.frcX
-        self.y = self.y + self.frcY
+        self.x = self.x + self.frc_x
+        self.y = self.y + self.frc_y
 
-        self.velX = self.velX * 0.9
-        self.velY = self.velY * 0.9
+        self.vel_x = self.vel_x * 0.9
+        self.vel_y = self.vel_y * 0.9
 
-        self.x = self.x + self.velX
-        self.y = self.y + self.velY
+        self.x = self.x + self.vel_x
+        self.y = self.y + self.vel_y
 
     def edges(self):
         if self.x <= 50 or self.x >= width-50 or self.y <= 50 or self.y >= height-50:
-            self.drawStroke = False
+            self.draw_stroke = False
         else:
-            self.drawStroke = True
+            self.draw_stroke = True
 
-    def resetForce(self):
-        self.frcX = 0
-        self.frcY = 0
+    def reset_force(self):
+        self.frc_x = 0
+        self.frc_y = 0
 
-    def setForce(self, fx, fy):
-        self.frcX = self.frcX + fx
-        self.frcY = self.frcY + fy
+    def set_force(self, fx, fy):
+        self.frc_x = self.frc_x + fx
+        self.frc_y = self.frc_y + fy
 
-    def setLastPos(self):
+    def set_last_pos(self):
         self.lx, self.ly = self.x, self.y
 
-    def calculateForce(self, mx, my, mp):
+    def calculate_force(self, mx, my, mp):
         dy = mx - self.x
         dx = my - self.y
         angle = math.atan2(dy, dx) * mp
@@ -62,13 +58,11 @@ class Particle:
         sy = math.cos(angle)
         return [sx, sy]
 
-    def draw(self, context):
-        if self.drawStroke is not False:
-            context.set_line_width(0.9)
-            context.set_source_rgba(0, 0, 0, 1)
-            context.move_to(self.lx, self.ly)
-            context.line_to(self.x, self.y)
-            context.stroke()
+    def draw(self):
+        if self.draw_stroke is not False:
+            line_width(0.9)
+            Line(self.lx, self.ly, self.x, self.y)
+            stroke()
 
 
 # Magnet Class
@@ -79,21 +73,20 @@ class magnet:
         self.p = pole
 
 
-# Main function
-def main():
+def draw():
 
-    context.set_source_rgba(0.95, 0.95, 0.95, 1)
-    context.paint()
+    background(0.95, 0.95, 0.95, 1.0)
+    color(0.0, 0.0, 0.0, 1.0)
 
     magnets = []
-    myParticles = []
-    numMagnets = random.randint(2, 8)
-    sumX, sumY = 0, 0
+    my_particles = []
+    num_magnets = random.randint(2, 8)
+    sum_x, sum_y = 0, 0
     sums = 0
 
-    print("Number of Magnets: " + str(numMagnets))
+    print("Number of Magnets: " + str(num_magnets))
 
-    for m in range(numMagnets):
+    for m in range(num_magnets):
         pole = 1
         if random.uniform(0, 1) < 0.5:
             pole = -1
@@ -104,52 +97,42 @@ def main():
                 pole
         ))
 
-    startNum = 360
-    a = (math.pi*2)/startNum
+    start_num = 360
+    a = (math.pi*2)/start_num
 
     for x in range(100, width-100, (width-200)//1):
         for y in range(100, height-100, (height-200)//1):
-            for i in range(startNum):
+            for i in range(start_num):
                 xx = x + (math.sin(a*i)*250) + ((width-200)//2)
                 yy = y + (math.cos(a*i)*250) + ((height-200)//2)
                 vx = random.uniform(-1, 1)*0.5
                 vy = random.uniform(-1, 1)*0.5
-                myParticles.append(Particle(xx, yy, vx, vy))
+                my_particles.append(Particle(xx, yy, vx, vy))
 
-    for p in myParticles:
+    for p in my_particles:
         for t in range(1000):
             for m in magnets:
-                sums = p.calculateForce(m.x, m.y, m.p*4)
-                sumX = sumX + sums[0]
-                sumY = sumY + sums[1]
+                sums = p.calculate_force(m.x, m.y, m.p*4)
+                sum_x = sum_x + sums[0]
+                sum_y = sum_y + sums[1]
 
-            sumX = sumX / len(magnets)
-            sumY = sumY / len(magnets)
+            sum_x = sum_x / len(magnets)
+            sum_y = sum_y / len(magnets)
 
-            p.resetForce()
-            p.setForce(sumX, sumY)
+            p.reset_force()
+            p.set_force(sum_x, sum_y)
             p.update()
             p.edges()
             if t % 8 == 0:
-                p.draw(context)
-                p.setLastPos()
+                p.draw()
+                p.set_last_pos()
 
 
-# Call the main function
+def main():
+    setup(width, height)
+    draw()
+    export()
+
+
 if __name__ == '__main__':
-    if fileFormat == 'PNG':
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
-        context = cairo.Context(surface)
-        main()
-        filename = uuid.uuid4().hex[:8]
-        surface.write_to_png('Images/Magnetic_Flow/' + str(filename) + '.png')
-    elif fileFormat == 'SVG':
-        filename = uuid.uuid4().hex[:8]
-        surface = cairo.SVGSurface(
-                'Images/Magnetic_Flow/0-svg/' + str(filename) + '.svg',
-                width,
-                height
-        )
-        context = cairo.Context(surface)
-        main()
-        surface.finish()
+    main()

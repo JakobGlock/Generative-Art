@@ -1,0 +1,5 @@
+noise==1.2.2
+numpy==1.17.3
+pycairo==1.19.1
+tweepy==3.8.0
+docopt==0.6.2
