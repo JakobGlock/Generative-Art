@@ -8,7 +8,7 @@ This project has evolved into a small python package which has functions and cla
   
 This is really built for my own personal use and is a constantly evolving project, but I thought people may enjoy / be interested in it, so that is why I am making it public.
 
-You can get these scripts without the python module integration by cloning the 0.0.1 tag, go here: https://github.com/JakobGlock/Generative-Art/tree/0.1.0
+You can get these scripts without the python module integration by cloning the 0.0.1 tag, go here: https://github.com/JakobGlock/Generative-Art/tree/0.1.1
 
 
 ### Setup
